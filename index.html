@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Yasmeen Tuition</title>
+  <link rel="icon" type="image/png" href="logo.png">
+  <style>
+    :root {
+      --primary: #284b63;
+      --secondary: #d9d9d9;
+      --white: #ffffff;
+      --accent: #3c6e71;
+      --dark: #353535;
+      --emerald: #2ecc97;
+      --black: #101820;
+      --radius: 20px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: var(--secondary);
+      color: var(--black);
+      font-size: 18px;
+      letter-spacing: 0.06px;
+      overflow-x: hidden;
+    }
+    /* Loader Overlay */
+    #loader-bg {
+      position: fixed; left: 0; top: 0; width: 100vw; height: 100vh;
+      background: var(--primary);
+      display: flex; align-items: center; justify-content: center; flex-direction: column;
+      z-index: 10000; gap: 32px;
+      transition: opacity 0.7s;
+    }
+    #loader-bg.hide {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.7s;
+    }
+    .logo-3d-anim {
+      width: 320px; height: 220px;
+      perspective: 800px;
+      border-radius: 32px;
+      background: transparent;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 1rem 2rem rgba(40,75,99,0.18);
+      position: relative;
+      animation: logo3dIn 1.3s cubic-bezier(.82,-0.03,.36,1.11) forwards;
+      transform:
+        scale(0.75)
+        rotateY(-30deg)
+        rotateX(45deg)
+        translateZ(4.5rem);
+      transform-origin: 50% 100%;
+      transform-style: preserve-3d;
+      will-change: transform;
+      overflow: visible;
+    }
+    @keyframes logo3dIn {
+      0% {
+        opacity: 1;
+        transform:
+          scale(0.75)
+          rotateY(-30deg)
+          rotateX(45deg)
+          translateZ(4.5rem);
+      }
+      60% {
+        opacity: 1;
+        transform:
+          scale(1.06)
+          rotateY(0deg)
+          rotateX(0deg)
+          translateZ(0);
+      }
+      100% {
+        opacity: 1;
+        transform:
+          scale(1)
+          rotateY(0deg)
+          rotateX(0deg)
+          translateZ(0);
+      }
+    }
+    .logo-3d-img {
+      width: 100%; height: 100%;
+      border-radius: 28px;
+      background: var(--white);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 32px #2ecc9737;
+      overflow: hidden;
+      border: 4px solid var(--emerald);
+    }
+    .logo-3d-img img {
+      width: 96%; height: 96%;
+      object-fit: contain;
+      border-radius: 26px;
+      background: var(--white);
+      box-shadow: 0 1.5px 8px #2ecc9730;
+      margin: auto;
+      display: block;
+      transition: filter 0.25s;
+      filter: brightness(1.05) drop-shadow(0 2px 12px #2ecc9725);
+    }
+    .loader-title {
+      color: #fff;
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-align: center;
+      margin-top: 0.5em;
+      font-family: 'Montserrat', Arial, sans-serif;
+      text-shadow: 0 2px 12px #2227;
+    }
+    body.loading main, body.loading nav, body.loading section, body.loading .stats-banner, body.loading .logo-card-3d {
+      filter: blur(2px);
+      pointer-events: none;
+      user-select: none;
+    }
+    nav {
+      position: sticky; top: 0; z-index: 20;
+      height: 70px;
+      background: var(--black);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 16px 0 rgba(40,75,99,0.13);
+      padding: 0 12px;
+    }
+    .nav-container {
+      width: 100%;
+      max-width: 1000px;
+      display: flex; align-items: center; justify-content: center;
+      gap: 20px;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      margin-right: 20px;
+    }
+    .nav-logo-img {
+      width: 42px; height: 42px; border-radius: 50%;
+      background: var(--emerald);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 1px 4px 0 #2ecc9733;
+      border: 2px solid var(--white);
+      overflow: hidden;
+    }
+    .nav-logo-img img {
+      width: 38px; height: 38px; object-fit: contain; border-radius: 50%;
+      background: var(--white);
+      display: block;
+    }
+    .nav-logo-text {
+      color: var(--white); font-size: 1.35rem;
+      font-weight: 800; letter-spacing: 1.2px;
+      font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
+      text-shadow: 0 1px 4px #2ecc9711;
+    }
+    .nav-links {
+      display: flex; gap: 34px;
+      justify-content: center; align-items: center;
+      width: 100%; min-width: 0;
+    }
+    .nav-links a {
+      color: var(--white); text-decoration: none; font-weight: 700;
+      font-size: 1.09rem; letter-spacing: 0.8px;
+      padding: 11px 22px; border-radius: 9px;
+      background: transparent; position: relative; z-index: 1;
+      outline: none;
+      transition: color .16s, background .17s, transform .10s, box-shadow .18s;
+      box-shadow: 0 1px 0 0 transparent;
+      font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
+      cursor: pointer;
+    }
+    .nav-links a.active, .nav-links a:focus, .nav-links a:hover {
+      color: var(--emerald); background: var(--white);
+      transform: scale(1.10);
+      box-shadow: 0 2px 10px 0 #2ecc9727;
+      font-weight: 800;
+    }
+    .logo-card-3d {
+      display: none;
+    }
+    /* Only show in contact section */
+    #contact .logo-card-3d {
+      display: flex;
+      width: 320px;
+      height: 220px;
+      margin: 0 0 34px 0;
+      perspective: 800px;
+      border-radius: 32px;
+      background: transparent;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 1.5rem 2.5rem rgba(40,75,99,0.15);
+      cursor: pointer;
+      transform:
+        scale(0.75)
+        rotateY(-30deg)
+        rotateX(45deg)
+        translateZ(4.5rem);
+      transform-origin: 50% 100%;
+      transform-style: preserve-3d;
+      transition: 0.6s cubic-bezier(.22,1.1,.36,1) transform, box-shadow 0.3s;
+    }
+    #contact .logo-card-3d:hover {
+      transform: scale(1) rotateY(0deg) rotateX(0deg) translateZ(0);
+      box-shadow: 0 2.5rem 3.5rem rgba(44,204,151,0.19), 0 1rem 3rem rgba(40,75,99,0.13);
+    }
+    #contact .logo-card-3d .logo-img-3d {
+      border-radius: 28px;
+      overflow: hidden;
+      width: 100%; height: 100%;
+      box-shadow: 0 0 32px #2ecc9737;
+      background: var(--white);
+      position: relative;
+      display: flex; align-items: center; justify-content: center;
+      border: 4px solid var(--emerald);
+      transition: border 0.3s;
+    }
+    #contact .logo-card-3d:hover .logo-img-3d {
+      border: 4px solid var(--primary);
+    }
+    #contact .logo-card-3d .logo-img-3d img {
+      width: 96%; height: 96%; object-fit: contain; border-radius: 24px; background: var(--white);
+      box-shadow: 0 1.5px 8px #2ecc9730;
+      display: block;
+      margin: auto;
+      filter: brightness(1.06) drop-shadow(0 2px 12px #2ecc9725);
+      transition: filter 0.25s;
+    }
+    #contact .logo-card-3d:hover .logo-img-3d img {
+      filter: brightness(1.13) drop-shadow(0 4px 18px #3c6e7188);
+    }
+    @media (max-width: 500px) {
+      #contact .logo-card-3d, .logo-3d-anim { width: 98vw; height: 140px; min-width: 0; }
+      nav {padding: 0 1vw;}
+      .nav-logo-img {width: 32px; height: 32px;}
+      .nav-logo-img img {width: 28px; height: 28px;}
+    }
+    
+    :root {
+      --primary: #284b63;
+      --secondary: #d9d9d9;
+      --white: #ffffff;
+      --accent: #3c6e71;
+      --dark: #353535;
+      --emerald: #2ecc97;
+      --black: #101820;
+      --radius: 16px;
+      --nav-height: 70px;
+      --shadow: 0 2px 16px 0 rgba(40,75,99,0.13);
+      --section-max: 1000px;
+      --logo-size: 42px;
+      --title-size: 2.2rem;
+      --subtitle-size: 1.35rem;
+      --font-main: 'Segoe UI', 'Arial', sans-serif;
+      --font-alt: 'Montserrat', 'Segoe UI', 'Arial', sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: var(--font-main);
+      background: var(--secondary);
+      color: var(--black);
+      overflow-x: hidden;
+      font-size: 18px;
+      letter-spacing: 0.06px;
+    }
+    /* Loader Overlay */
+    #loader-bg {
+      position: fixed; z-index: 10000; left: 0; top: 0; width: 100vw; height: 100vh;
+      background: var(--primary, #284b63);
+      display: none; /* Hide loader overlay */
+    }
+    body.loading main, body.loading nav, body.loading section, body.loading .stats-banner {
+      filter: blur(2px);
+      pointer-events: none;
+      user-select: none;
+    }
+    .hideLoader { display: none !important; }
+    nav {
+      position: sticky; top: 0; z-index: 20;
+      height: var(--nav-height);
+      background: var(--black);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: var(--shadow);
+      padding: 0 12px;
+      min-width: 0;
+    }
+    .nav-container {
+      width: 100%;
+      max-width: var(--section-max);
+      display: flex; align-items: center; justify-content: center;
+      gap: 20px;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      margin-right: 20px;
+    }
+    .nav-logo-img {
+      width: var(--logo-size); height: var(--logo-size); border-radius: 50%;
+      background: var(--emerald); display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 1px 4px 0 #2ecc9733;
+      border: 2px solid var(--white);
+    }
+    .nav-logo-img svg { width: 32px; height: 32px; }
+    .nav-logo-text {
+      color: var(--white); font-size: 1.35rem;
+      font-weight: 800; letter-spacing: 1.2px;
+      font-family: var(--font-alt);
+      text-shadow: 0 1px 4px #2ecc9711;
+    }
+    .nav-links {
+      display: flex; gap: 34px;
+      justify-content: center; align-items: center;
+      width: 100%; min-width: 0;
+    }
+    .nav-links a {
+      color: var(--white); text-decoration: none; font-weight: 700;
+      font-size: 1.09rem; letter-spacing: 0.8px;
+      padding: 11px 22px; border-radius: 9px;
+      background: transparent; position: relative; z-index: 1;
+      outline: none;
+      transition: color .16s, background .17s, transform .10s, box-shadow .18s;
+      box-shadow: 0 1px 0 0 transparent;
+      font-family: var(--font-alt);
+      cursor: pointer;
+    }
+    .nav-links a.active, .nav-links a:focus, .nav-links a:hover {
+      color: var(--emerald); background: var(--white);
+      transform: scale(1.10);
+      box-shadow: 0 2px 10px 0 #2ecc9727;
+      font-weight: 800;
+    }
+    section {
+      max-width: var(--section-max);
+      margin: 38px auto 0 auto;
+      background: var(--white);
+      padding: 36px 32px 36px 32px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      opacity: 1; transform: none;
+      display: none;
+      min-width: 0;
+      will-change: opacity,transform;
+      font-size: 1.11em;
+    }
+    section.visible {
+      display: block;
+      animation: sectionPopIn 0.72s cubic-bezier(.82,-0.03,.36,1.11);
+    }
+    @keyframes sectionPopIn {
+      from{opacity:0.1;transform:translateY(60px) scale(.98);}
+      70%{opacity:1;transform:translateY(-5px) scale(1.01);}
+      to{opacity:1;transform:none;}
+    }
+    h1, h2 {
+      color: var(--primary); margin: 0 0 18px 0;
+      font-family: var(--font-alt);
+      font-weight: 900; letter-spacing: 1.1px;
+      line-height: 1.13;
+    }
+    h1 {font-size: var(--title-size);}
+    h2 {font-size: var(--subtitle-size);}
+    .intro {
+      font-size: 1.16em;
+      color: var(--dark);
+      margin-bottom: 18px;
+      line-height: 1.5;
+      font-weight: 600;
+      font-family: var(--font-alt);
+    }
+    .home-row {
+      display: flex; gap: 28px; align-items: center; flex-wrap: wrap;
+      margin-bottom: 14px;
+      min-height: 80px;
+    }
+    .specialties {
+      flex: 2 1 230px;
+      display: flex; gap: 18px; margin-top: 5px;
+    }
+    .subject-card {
+      background: linear-gradient(120deg,var(--primary) 60%,var(--accent) 100%);
+      color: var(--white); font-weight: bold;
+      padding: 22px 28px; border-radius: var(--radius);
+      box-shadow: 0 2px 12px 0 #284b631d;
+      font-size: 1.13rem;
+      min-width: 90px; text-align: center;
+      transition: transform .17s, box-shadow .13s, background .13s, color .13s;
+      cursor: pointer;
+      margin-bottom: 8px;
+    }
+    .subject-card:hover {
+      background: linear-gradient(110deg,var(--emerald) 60%,var(--primary) 100%);
+      color: var(--black);
+      transform: scale(1.05) rotate(-1deg);
+      box-shadow: 0 6px 18px 0 #2ecc9740;
+    }
+    .home-info-extra {
+      margin-top: 17px;
+      font-size: 1em;
+      color: var(--primary);
+      background: #e8f6f1;
+      border-radius: 10px;
+      padding: 13px 18px;
+      box-shadow: 0 1px 4px 0 #2ecc9712;
+      font-weight: 500;
+    }
+    /* Banner Styling */
+    .stats-banner {
+      width: 100vw;
+      max-width: 100%;
+      margin: 42px 0 42px 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 90px;
+      position: relative;
+      z-index: 2;
+      background: none;
+    }
+    .stats-banner-inner {
+      width: 100%;
+      max-width: 700px;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      border-radius: 40px;
+      /* White in center, fades to gray on both sides */
+      background: linear-gradient(
+        to right,
+        #d9d9d9 0%,
+        #fff 18%,
+        #fff 82%,
+        #d9d9d9 100%
+      );
+      box-shadow: 0 5px 30px 0 rgba(0,0,0,0.09);
+      padding: 22px 0;
+      gap: 16px;
+      overflow: hidden;
+      animation: bannerFadeIn 1.2s;
+      position: relative;
+      border: 1.5px solid #ececec;
+    }
+    @keyframes bannerFadeIn {
+      from { opacity: 0; transform: translateY(30px);}
+      to { opacity: 1; transform: none;}
+    }
+    .stat-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0 24px;
+      color: #101820;
+      text-align: center;
+      z-index: 3;
+      position: relative;
+    }
+    .stat-number {
+      font-size: 2.3em;
+      font-weight: bold;
+      letter-spacing: 2px;
+      color: #101820;
+      line-height: 1;
+      margin-bottom: 4px;
+      text-shadow: 0 2px 8px #fff2;
+      transition: color .2s;
+    }
+    .stats-banner-inner .stat-block:hover .stat-number {
+      color: var(--emerald);
+    }
+    .stat-label {
+      font-size: 0.92em;
+      line-height: 1.1;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      color: #353535;
+      opacity: 0.93;
+      text-transform: none;
+    }
+    @media (max-width: 700px) {
+      .stats-banner-inner {
+        flex-direction: column;
+        gap: 10px;
+        padding: 19px 0;
+        border-radius: 26px;
+        max-width: 90vw;
+      }
+      .stat-block {
+        margin: 0 0 2px 0;
+      }
+      .stat-number {
+        font-size: 2em;
+      }
+    }
+    .pricing-table {
+      width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 1em;
+    }
+    .pricing-table th, .pricing-table td {
+      padding: 11px 7px; text-align: center; font-size: 0.99em;
+    }
+    .pricing-table th {
+      background: var(--primary); color: var(--white); font-weight: 800; font-size: 1.07em;
+      font-family: var(--font-alt);
+    }
+    .pricing-table tr {
+      transition: background .14s;
+    }
+    .pricing-table tr:hover {
+      background: #2ecc9710;
+    }
+    .pricing-table td {
+      border-bottom: 1px solid #eee;
+    }
+    .check {
+      color: var(--emerald); font-size: 1.09rem;
+    }
+    .cross {
+      color: #bbb; font-size: 1.03rem;
+    }
+    .note {
+      font-size: 0.97em; color: #666; margin-top: 9px;
+    }
+    .pricing-desc {
+      font-size: 1em; margin: 10px 0 0 0; color: #222;
+      font-family: var(--font-main);
+    }
+    .about-list {
+      margin: 0; padding: 0 0 0 15px; font-size: 0.98em; color: #222; font-weight: 600;
+    }
+    .about-list li {margin-bottom: 7px;}
+    .contact-hero {
+      display: flex; align-items: center; gap: 22px; margin-top: 22px;
+      flex-wrap: wrap;
+    }
+    .contact-logo-anim {
+      min-width: 60px; min-height: 60px; width: 70px; height: 70px;
+      background: linear-gradient(135deg, var(--emerald) 60%, var(--primary) 100%);
+      border-radius: 50%;
+      box-shadow: 0 4px 22px 0 #2ecc9733;
+      display: flex; align-items: center; justify-content: center;
+      animation: logoBounceIn 0.7s both;
+      margin-bottom: 9px;
+      border: 3px solid var(--white);
+      transition: transform .2s;
+    }
+    @keyframes logoBounceIn {
+      0%{transform: scale(0.7) rotate(-13deg);}
+      65%{transform: scale(1.12) rotate(12deg);}
+      90%{transform: scale(0.95) rotate(-8deg);}
+      100%{transform: scale(1) rotate(0);}
+    }
+    .contact-logo-anim span {
+      font-size: 1.5rem; font-weight: 900; color: var(--white);
+      letter-spacing: 1.1px; text-shadow: 1px 1px 7px #0005;
+      font-family: var(--font-alt);
+      user-select: none;
+    }
+    .contact-logo-anim:hover {
+      transform: scale(1.05) rotate(-4deg);
+      box-shadow: 0 7px 26px 0 #2ecc975c;
+    }
+    .contact-info {
+      display: flex; flex-direction: column; gap: 11px; margin: 5px 0 0 0;
+      font-size: 1em;
+    }
+    .contact-row {
+      display: flex; align-items: center; gap: 12px;
+      font-size: 1em;
+    }
+    .contact-label {
+      font-weight: 800; color: var(--primary); min-width: 80px; font-size: 1em;
+      font-family: var(--font-alt);
+    }
+    .cta-btn {
+      background: var(--emerald); color: var(--white);
+      padding: 13px 34px;
+      font-size: 1em; font-weight: 900;
+      border: none; border-radius: 30px;
+      margin: 28px 0 0 0;
+      cursor: pointer; box-shadow: 0 2px 10px 0 #2ecc9719;
+      font-family: var(--font-alt);
+      transition: background .13s, color .15s, transform .12s;
+      letter-spacing: 0.7px;
+    }
+    .cta-btn:hover {background: var(--primary); color: var(--emerald); transform: scale(1.04);}
+    @media (max-width: 900px) {
+      section {padding: 11px 2vw;}
+      .home-row {flex-direction: column; gap: 10px;}
+      .specialties {flex-direction: column; gap: 9px;}
+      .nav-container {flex-direction: column;gap: 7px;}
+      .nav-logo {margin-right: 0;}
+      .contact-hero {flex-direction: column; gap: 7px;}
+      h1 {font-size: 1.45rem;}
+      h2 {font-size: 1.07rem;}
+      .subject-card {padding: 15px 0;}
+      .contact-logo-anim {width: 44px; height: 44px;}
+    }
+  </style>
+</head>
+<body class="loading">
+  <!-- Loader Overlay with 3D Card Animation -->
+  <div id="loader-bg">
+    <div class="logo-3d-anim">
+      <div class="logo-3d-img">
+        <!-- Place your logo path below for the loader animation -->
+        <img src="logo.png" alt="Yasmeen Tuition Logo Loader"/>
+      </div>
+    </div>
+    <div class="loader-title">Yasmeen Tuition</div>
+  </div>
+  <nav>
+    <div class="nav-container">
+      <div class="nav-logo">
+        <span class="nav-logo-img">
+          <!-- Place your logo path below for the navigation -->
+          <img src="logo.png" alt="Yasmeen Tuition Logo"/>
+        </span>
+        <span class="nav-logo-text">Yasmeen Tuition</span>
+      </div>
+      <div class="nav-links">
+        <a href="#" data-section="home" class="active">Home</a>
+        <a href="#" data-section="about">About</a>
+        <a href="#" data-section="pricing">Pricing</a>
+        <a href="#" data-section="contact">Contact</a>
+      </div>
+    </div>
+  </nav>
+  <!-- Home Section (logo card removed here) -->
+  <section id="home" class="visible">
+    <h1>Welcome to Yasmeen Tuition</h1>
+    <div class="home-row">
+      <div class="specialties">
+        <div class="subject-card">Mathematics<br><span style="font-size:0.93rem;font-weight:400;">(Algebra, Geometry, Calculus, &amp; More)</span></div>
+        <div class="subject-card">Science<br><span style="font-size:0.93rem;font-weight:400;">(Physics, Chemistry, Biology)</span></div>
+      </div>
+    </div>
+    <div class="intro">
+      <b>Excel in academics</b> with <span style="color:var(--emerald)">personal attention</span>, creative worksheets, and flexible schedules.<br>
+      <b>Offline batches</b> for all grades, tailored for <b>Math</b> & <b>Science</b> success.
+    </div>
+    <div class="home-info-extra">
+      <b>Why choose Yasmeen Tuition?</b>
+      <ul style="margin:7px 0 0 0;padding-left:1.1em;">
+        <li>Limited batch sizes for maximum focus</li>
+        <li>Worksheets, and regular feedback</li>
+        <li>Friendly, supportive, and motivating environment</li>
+        <li>Special support </li>
+        
+      </ul>
+    </div>
+    <button class="cta-btn" onclick="showSection('contact')">Contact &amp; Enroll Now</button>
+  </section>
+  <!-- About Section -->
+  <section id="about">
+    <h2>About Yasmeen Tuition</h2>
+    <p style="font-size:1em;line-height:1.5;">
+      <b>Yasmeen Tuition</b> offers top-tier, offline coaching in a modern, friendly space. With a proven track record of helping students excel, Yasmeen combines personal mentorship with proven study techniques for best results.<br><br>
+      <b>Our learning approach includes:</b>
+    </p>
+    <ul class="about-list">
+      <li>Interactive teaching methods and real-life examples</li>
+      <li>Individual doubt-clearing and mentoring</li>
+      <li>Guidance for school exams, olympiads, and entrance tests</li>
+      <li>Edu.- M.Sc Maths </li>
+    </ul>
+    <div class="note">
+      <b>Location:</b> Yash Florencia,Punyadham Ashram Road, Kondwha Budruk<br>
+      <b>Timings:</b> Weekdays-4:30pm to 6:30pm
+    </div>
+  </section>
+  <!-- Stats Banner: white fading to gray sides -->
+  <div class="stats-banner">
+    <div class="stats-banner-inner">
+      <div class="stat-block">
+        <span class="stat-number">40+</span>
+        <span class="stat-label">Students<br>taught</span>
+      </div>
+      <div class="stat-block">
+        <span class="stat-number">5+</span>
+        <span class="stat-label">Societies<br>taught in</span>
+      </div>
+      <div class="stat-block">
+        <span class="stat-number">10+</span>
+        <span class="stat-label">Years<br>experience</span>
+      </div>
+    </div>
+  </div>
+  <!-- Pricing Section -->
+  <section id="pricing">
+    <h2>Pricing &amp; Comparison</h2>
+    <div class="pricing-desc">
+      <b>Fee Structure:</b><br>
+      <span style="font-size:.93em;">(Exact amount depends on grade, subjects, and batch size. <b>Contact for personalized quote</b>.)</span>
+    </div>
+    <table class="pricing-table">
+      <tr>
+        <th>Features</th>
+        <th>Yasmeen Tuition</th>
+        <th>Other Tuitions</th>
+      </tr>
+      <tr>
+        <td>Comprehensive Worksheets</td>
+        <td><span class="check">&#10003;</span></td>
+        <td><span class="cross">&#10007;</span></td>
+      </tr>
+      <tr>
+        <td>Personal Attention</td>
+        <td><span class="check">&#10003;</span></td>
+        <td><span class="cross">&#10007;</span></td>
+      </tr>
+      <tr>
+        <td>Regular Tests &amp; Quizzes</td>
+        <td><span class="check">&#10003;</span></td>
+        <td><span class="cross">&#10007;</span></td>
+      </tr>
+      <tr>
+        <td>Monthly Progress Reports</td>
+        <td><span class="check">&#10003;</span></td>
+        <td><span class="cross">&#10007;</span></td>
+      </tr>
+      <tr>
+        <td>Math &amp; Science Specialization</td>
+        <td><span class="check">&#10003;</span></td>
+        <td><span class="cross">&#10007;</span></td>
+      </tr>
+      <tr>
+        <td>All Boards-ICSE,IGCSE,CBSE,SSC</td>
+        <td><span class="check">&#10003;</span></td>
+        <td><span class="cross">&#10007;</span></td>
+      </tr>
+      <tr>
+      <tr>
+        <td>Parent Feedback</td>
+        <td><span class="check">&#10003;</span></td>
+        <td><span class="cross">&#10007;</span></td>
+      </tr>
+    </table>
+    <div class="note">
+      <b>Contact now for your custom quote and batch availability!</b>
+    </div>
+    <button class="cta-btn" onclick="showSection('contact')">Get Personalized Fee Quote</button>
+  </section>
+  <!-- Contact Section -->
+  <section id="contact">
+    <h2>Contact Yasmeen Tuition</h2>
+    <!-- 3D Card Logo Animation - visible only in contact section -->
+    <div class="logo-card-3d">
+      <div class="logo-img-3d">
+        <!-- Place your logo path below for the contact 3D card -->
+        <img src="logo.png" alt="Yasmeen Tuition Logo"/>
+      </div>
+    </div>
+    <div class="contact-hero">
+      <div class="contact-logo-anim">
+        <span>
+          <!-- Place your logo path below for the contact icon (small) -->
+          <img src="logo.png" alt="YT" style="width:32px;height:32px;border-radius:50%;background:var(--emerald);"/>
+        </span>
+      </div>
+      <div>
+        <p style="font-size:1em;font-family:var(--font-alt);">
+          <b>Ready to join or need more info?</b> Reach out today—let’s build your academic success together!
+        </p>
+        <div class="contact-info">
+          <div class="contact-row"><span class="contact-label">Phone:</span> <span>+91 7841850384</span></div>
+          <div class="contact-row"><span class="contact-label">Mobile:</span> <span>+91 7841850384</span></div>
+          <div class="contact-row"><span class="contact-label">WhatsApp:</span> <span>+91 7841850384</span></div>
+          <div class="contact-row"><span class="contact-label">Email:</span> <span>yasmeen.bagwan@gmail.com</span></div>
+          <div class="contact-row"><span class="contact-label">Address:</span> <span>Yash Florencia,Punyadham Ashram Road, Kondwha Budruk</span></div>
+          <div class="contact-row"><span class="contact-label">Hours:</span> <span>Mon-Sat 4:30 to 6:30pm(Timing change)</span></div>
+        </div>
+        <button class="cta-btn" onclick="showSection('home')">Back to Home</button>
+      </div>
+    </div>
+  </section>
+  <script>
+    // Loader hide after 1.3s, card animates in on load
+    window.addEventListener('DOMContentLoaded', function() {
+      setTimeout(function() {
+        document.getElementById('loader-bg').classList.add('hide');
+        document.body.classList.remove('loading');
+      }, 1300);
+    });
+    function showSection(section, fast) {
+      document.querySelectorAll('section').forEach(s => s.classList.remove('visible'));
+      document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+      document.querySelectorAll('.nav-links a').forEach(a => {
+        if (a.getAttribute('data-section') === section) a.classList.add('active');
+      });
+      const el = document.getElementById(section);
+      if (el) {
+        el.classList.add('visible');
+        if (!fast) {
+          setTimeout(() => {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 100);
+        }
+      }
+    }
+    document.querySelectorAll('.nav-links a').forEach(link => {
+      link.addEventListener('click', e => {
+        e.preventDefault();
+        const section = link.getAttribute('data-section');
+        showSection(section, false);
+      });
+    });
+    function sectionScrollReveal() {
+      let revealSections = document.querySelectorAll('section');
+      let windowHeight = window.innerHeight;
+      revealSections.forEach(sec => {
+        let secTop = sec.getBoundingClientRect().top;
+        if (secTop < windowHeight - 60) {
+          sec.classList.add('visible');
+        }
+      });
+    }
+    window.addEventListener('scroll', sectionScrollReveal);
+    window.addEventListener('resize', sectionScrollReveal);
+    window.addEventListener('load', () => {
+      sectionScrollReveal();
+      const loader = document.getElementById('loader-bg');
+      if (loader) loader.classList.add('hideLoader');
+    });
+  </script>
+</body>
+</html>
